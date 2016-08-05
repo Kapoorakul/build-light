@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "https://nexus.emdeon.net:8443/nexus/content/repositories/central" }
+    }
+}
+
+apply plugin: 'maven-publish'
+
+group = 'com.changehealthcare.mobius'
+version = System.getenv('BUILD_NUMBER')
+
+
+task clean(type: Delete) {
+    delete = ['build']
+}
+
+
+task createArchive(type: Zip) {
+    destinationDir file('build')
+    from 'script'
+}
+
+publishing {
+    repositories {
+        maven {
+            if (project.version.endsWith('-SNAPSHOT')) {
+                url = "https://nexus.emdeon.net:8443/nexus/content/repositories/mobius-snapshots"
+            } else {
+                url = "https://nexus.emdeon.net:8443/nexus/content/repositories/mobius-releases"
+            }
+            credentials {
+                username = 'deployer'
+                password = 'deploy123'
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            version version
+                artifact createArchive {
+                    extension 'zip'
+                    classifier 'jenkins-script'
+            }
+        }
+    }
+}
+

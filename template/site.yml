@@ -1,0 +1,5 @@
+- name: Generate configuration file
+  hosts: localhost
+
+  roles:
+    - build-light-Stack

@@ -1,0 +1,20 @@
+---
+
+- name: Generate the cloud formation template
+  template: src=stack.json.j2 dest=/tmp/stack.json
+  with_items: "{{ MOBIUS }}"
+
+- name: Create Stack with EC2 Instance
+  cloudformation:
+        stack_name: "Mobius-BuildLight"
+        state: "present"
+        region: "{{item.region}}"
+        template: /tmp/stack.json
+  with_items: "{{MOBIUS}}"
+  register: events
+
+- name: show stack output
+  debug: msg="{{ events }}"
+
+- name: delete the temporary file
+  file: path=/tmp/stack.json state=absent

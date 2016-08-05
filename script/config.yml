@@ -1,0 +1,13 @@
+CIE:
+ Connected: False
+ Light: None
+ URL: None
+MOBIUS:
+ Connected: True
+ Light: 2
+ URL: https://jenkins.mobius.emdeon.net:443/
+ERXCHANGE:
+ Connected: True
+ Light: 3
+ URL: http://jenkins.westlakerobotics.com:8080/
+

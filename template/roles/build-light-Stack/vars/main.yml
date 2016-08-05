@@ -1,0 +1,3 @@
+---
+MOBIUS:
+     - {region: us-east-1, ImageId: ami-6869aa05, InstanceProfile: MobiusInstances, InstanceType: t2.micro, KeyName: lifx.pem, SubnetId: subnet-fe401da6}

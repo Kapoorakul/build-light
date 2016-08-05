@@ -1,0 +1,48 @@
+{
+   "AWSTemplateFormatVersion":"2010-09-09",
+   "Description":"A sample template",
+   "Resources":{
+      "BuildLightSecurityGroup" : {
+             "Type" : "AWS::EC2::SecurityGroup",
+             "Properties" : {
+                 "VpcId" : "vpc-43fb4f24",
+                 "GroupDescription" : "SSH access",
+                 "SecurityGroupIngress" : [
+                     {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "10.120.0.0/16"}
+                 ],
+                 "Tags" : [
+                     {"Key" : "Name", "Value" : "build-light-security-group"}
+                ]
+                        }
+      },
+
+      "MyEC2Instance":{
+         "Type":"AWS::EC2::Instance",
+         "Properties":{
+            "ImageId":"{{item.ImageId}}",
+            "InstanceType":"{{item.InstanceType}}",
+            "KeyName":"{{item.KeyName}}",
+            "IamInstanceProfile" : "{{item.InstanceProfile}}",
+            "SecurityGroupIds": [{ "Ref": "BuildLightSecurityGroup" }],
+            "SubnetId":"{{item.SubnetId}}",
+            "UserData":{
+               "Fn::Base64":{
+                  "Fn::Join":[
+                     "",
+                     [
+                        "#!/bin/bash\n",
+                        "pip install requests\n",
+                        "pip install ConfigParser\n",
+                        "pip install jenkinsapi\n",
+                        "wget -O build-light.zip https://nexus.emdeon.net:8443/nexus/content/repositories/mobius-releases/com/changehealthcare/mobius/build-light/9/build-light-9-jenkins-script.zip\n",
+                        "unzip -C build-light.zip\n",
+                        "python build-light.py\n"
+                     ]
+                  ]
+               }
+            }
+         }
+      }
+   }
+}
+
